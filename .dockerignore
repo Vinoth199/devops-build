@@ -11,7 +11,4 @@ yarn-error.log
 *.log
 .env
 
-# Ignore local Docker files but keep the build/ folder
-Dockerfile
-docker-compose.yml
 
