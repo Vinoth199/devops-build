@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'a4b91734-3dde-4c93-bee3-776e9b4912b1'
+        PROD_IMAGE_NAME = 'vinoth1908/prod:prod'
+        REGISTRY_URL = 'https://index.docker.io/v1/'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh './build.sh'
+                }
+            }
+        }
+
+        stage('Push to Prod Docker Hub') {
+            steps {
+                withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "${REGISTRY_URL}"]) {
+                    script {
+                        sh "docker tag development-web ${PROD_IMAGE_NAME}"
+                        sh "docker push ${PROD_IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    sshagent(['52.66.235.84']) {
+                        sh './deploy.sh'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Production pipeline succeeded'
+        }
+        failure {
+            echo 'Production pipeline failed'
+        }
+    }
+}
+

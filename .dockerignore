@@ -1,0 +1,17 @@
+# Ignore node modules and dependencies
+node_modules/
+
+# Ignore Git repo and ignore file
+.git
+.gitignore
+
+# Ignore logs and environment files
+npm-debug.log
+yarn-error.log
+*.log
+.env
+
+# Ignore local Docker files but keep the build/ folder
+Dockerfile
+docker-compose.yml
+
