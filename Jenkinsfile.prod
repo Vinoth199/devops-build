@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'a4b91734-3dde-4c93-bee3-776e9b4912b1'
-        PROD_IMAGE_NAME = 'vinoth1908/prod:prod'
-        REGISTRY_URL = 'https://index.docker.io/v1/'
+        DOCKER_CREDENTIALS_ID = 'a4b91734-3dde-4c93-bee3-776e9b4912b1'  // Docker Hub credentials ID
+        PROD_IMAGE_NAME = 'vinoth1908/prod:prod'  // Name of the prod image
+        REGISTRY_URL = 'https://index.docker.io/v1/'  // Docker Hub URL
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    checkout scm
+                    checkout scm  // Checkout the repository based on Jenkins job configuration
                 }
             }
         }
@@ -19,30 +19,31 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh './build.sh'
-                    sh 'ls -la build/'  // Verify the build folder exists
+                    sh './build.sh'  // Execute your build script
+                    sh 'ls -la build/'  // Verify the existence of the build folder
                 }
             }
         }
 
         stage('Push to Prod Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "${REGISTRY_URL}"]) {
-                    script {
-                        sh "docker tag development-web ${PROD_IMAGE_NAME}"
-                        sh "docker push ${PROD_IMAGE_NAME}"
+                script {
+                    // Login to Docker Hub and push the image to the prod repository
+                    withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "${REGISTRY_URL}"]) {
+                        sh "docker tag development-web ${PROD_IMAGE_NAME}"  // Tag the image as prod
+                        sh "docker push ${PROD_IMAGE_NAME}"  // Push the prod image to Docker Hub
                     }
                 }
             }
         }
-
+    }
 
     post {
         success {
-            echo 'Production pipeline succeeded'
+            echo 'Production pipeline succeeded'  // Notify when the pipeline succeeds
         }
         failure {
-            echo 'Production pipeline failed'
+            echo 'Production pipeline failed'  // Notify if the pipeline fails
         }
     }
 }
