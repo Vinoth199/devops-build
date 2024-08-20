@@ -4,14 +4,9 @@
 IMAGE_NAME="my-react-app"
 DOCKER_TAG=$(date +%Y%m%d%H%M%S)
 
-# Install dependencies and build React app
-echo "Installing dependencies and building React app..."
-npm install  # or yarn install
-npm run build  # or yarn build
-
 # Check if the build directory exists
 if [ ! -d "build" ]; then
-  echo "Error: build directory not found. Build process failed."
+  echo "Error: build directory not found."
   exit 1
 fi
 

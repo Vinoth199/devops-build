@@ -36,16 +36,6 @@ pipeline {
             }
         }
 
-        stage('Deploy to EC2') {
-            steps {
-                script {
-                    sshagent(['52.66.235.84']) {
-                        sh './deploy.sh'
-                    }
-                }
-            }
-        }
-    }
 
     post {
         success {
