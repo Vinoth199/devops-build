@@ -11,11 +11,4 @@ scp -o StrictHostKeyChecking=no ${DOCKER_COMPOSE_FILE} ${SSH_USER}@${SERVER_IP}:
 scp -o StrictHostKeyChecking=no -r ${BUILD_FOLDER} ${SSH_USER}@${SERVER_IP}:/home/${SSH_USER}/
 
 # SSH into EC2 and run Docker Compose
-ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} << 'EOF'
-    # Navigate to the directory containing Docker Compose file
-    cd /home/ubuntu
-
-    # Build and start the Docker containers
-    docker-compose -f ${DOCKER_COMPOSE_FILE} up -d
-EOF
-
+ssh -tt -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "docker-compose -f /home/${SSH_USER}/${DOCKER_COMPOSE_FILE} up -d"
